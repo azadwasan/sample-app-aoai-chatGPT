@@ -66,22 +66,6 @@ class _ChatHistorySettings(BaseSettings):
     enable_feedback: bool = False
 
 
-class _PromptflowSettings(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_prefix="PROMPTFLOW_",
-        env_file=DOTENV_PATH,
-        extra="ignore",
-        env_ignore_empty=True
-    )
-
-    endpoint: str
-    api_key: str
-    response_timeout: float = 30.0
-    request_field_name: str = "query"
-    response_field_name: str = "reply"
-    citations_field_name: str = "documents"
-
-
 class _AzureOpenAIFunction(BaseModel):
     name: str = Field(..., min_length=1)
     description: str = Field(..., min_length=1)
@@ -669,7 +653,6 @@ class _BaseSettings(BaseSettings):
     datasource_type: Optional[str] = None
     auth_enabled: bool = False
     sanitize_answer: bool = False
-    use_promptflow: bool = False
 
 
 class _AppSettings(BaseModel):
@@ -681,18 +664,7 @@ class _AppSettings(BaseModel):
     # Constructed properties
     chat_history: Optional[_ChatHistorySettings] = None
     datasource: Optional[DatasourcePayloadConstructor] = None
-    promptflow: Optional[_PromptflowSettings] = None
 
-    @model_validator(mode="after")
-    def set_promptflow_settings(self) -> Self:
-        try:
-            self.promptflow = _PromptflowSettings()
-            
-        except ValidationError:
-            self.promptflow = None
-            
-        return self
-    
     @model_validator(mode="after")
     def set_chat_history_settings(self) -> Self:
         try:
