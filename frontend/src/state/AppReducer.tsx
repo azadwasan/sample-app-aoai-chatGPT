@@ -3,24 +3,8 @@ import { Action, AppState } from './AppProvider'
 // Define the reducer function
 export const appStateReducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
-    case 'TOGGLE_CHAT_HISTORY':
-      return { ...state, isChatHistoryOpen: !state.isChatHistoryOpen }
     case 'UPDATE_CURRENT_CHAT':
       return { ...state, currentChat: action.payload }
-    case 'UPDATE_CHAT_HISTORY_LOADING_STATE':
-      return { ...state, chatHistoryLoadingState: action.payload }
-    case 'UPDATE_CHAT_HISTORY':
-      if (!state.chatHistory || !state.currentChat) {
-        return state
-      }
-      const conversationIndex = state.chatHistory.findIndex(conv => conv.id === action.payload.id)
-      if (conversationIndex !== -1) {
-        const updatedChatHistory = [...state.chatHistory]
-        updatedChatHistory[conversationIndex] = state.currentChat
-        return { ...state, chatHistory: updatedChatHistory }
-      } else {
-        return { ...state, chatHistory: [...state.chatHistory, action.payload] }
-      }
     case 'UPDATE_CHAT_TITLE':
       if (!state.chatHistory) {
         return { ...state, chatHistory: [] }
@@ -44,9 +28,6 @@ export const appStateReducer = (state: AppState, action: Action): AppState => {
       state.currentChat = null
       //TODO: make api call to delete conversation from DB
       return { ...state, chatHistory: filteredChat }
-    case 'DELETE_CHAT_HISTORY':
-      //TODO: make api call to delete all conversations from DB
-      return { ...state, chatHistory: [], filteredChatHistory: [], currentChat: null }
     case 'DELETE_CURRENT_CHAT_MESSAGES':
       //TODO: make api call to delete current conversation messages from DB
       if (!state.currentChat || !state.chatHistory) {
@@ -62,8 +43,6 @@ export const appStateReducer = (state: AppState, action: Action): AppState => {
       }
     case 'FETCH_CHAT_HISTORY':
       return { ...state, chatHistory: action.payload }
-    case 'SET_COSMOSDB_STATUS':
-      return { ...state, isCosmosDBAvailable: action.payload }
     case 'FETCH_FRONTEND_SETTINGS':
       return { ...state, isLoading: false, frontendSettings: action.payload }
     case 'SET_FEEDBACK_STATE':

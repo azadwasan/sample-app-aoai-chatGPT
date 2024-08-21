@@ -9,7 +9,7 @@ import DOMPurify from 'dompurify'
 import remarkGfm from 'remark-gfm'
 import supersub from 'remark-supersub'
 import Plot from 'react-plotly.js'
-import { AskResponse, Citation, Feedback, historyMessageFeedback } from '../../api'
+import { AskResponse, Citation, Feedback } from '../../api'
 import { XSSAllowTags, XSSAllowAttributes } from '../../constants/sanatizeAllowables'
 import { AppStateContext } from '../../state/AppProvider'
 
@@ -43,7 +43,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
   const [negativeFeedbackList, setNegativeFeedbackList] = useState<Feedback[]>([])
   const appStateContext = useContext(AppStateContext)
   const FEEDBACK_ENABLED =
-    appStateContext?.state.frontendSettings?.feedback_enabled && appStateContext?.state.isCosmosDBAvailable?.cosmosDB
+    appStateContext?.state.frontendSettings?.feedback_enabled
   const SANITIZE_ANSWER = appStateContext?.state.frontendSettings?.sanitize_answer
 
   const handleChevronClick = () => {
@@ -102,8 +102,6 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
     })
     setFeedbackState(newFeedbackState)
 
-    // Update message feedback in db
-    await historyMessageFeedback(answer.message_id, newFeedbackState)
   }
 
   const onDislikeResponseClicked = async () => {
@@ -118,7 +116,6 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
       // Reset negative feedback to neutral
       newFeedbackState = Feedback.Neutral
       setFeedbackState(newFeedbackState)
-      await historyMessageFeedback(answer.message_id, Feedback.Neutral)
     }
     appStateContext?.dispatch({
       type: 'SET_FEEDBACK_STATE',
@@ -142,7 +139,6 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
 
   const onSubmitNegativeFeedback = async () => {
     if (answer.message_id == undefined) return
-    await historyMessageFeedback(answer.message_id, negativeFeedbackList.join(','))
     resetFeedbackDialog()
   }
 

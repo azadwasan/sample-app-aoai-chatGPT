@@ -104,27 +104,6 @@ export type UserInfo = {
   user_id: string
 }
 
-export enum CosmosDBStatus {
-  NotConfigured = 'CosmosDB is not configured',
-  NotWorking = 'CosmosDB is not working',
-  InvalidCredentials = 'CosmosDB has invalid credentials',
-  InvalidDatabase = 'Invalid CosmosDB database name',
-  InvalidContainer = 'Invalid CosmosDB container name',
-  Working = 'CosmosDB is configured and working'
-}
-
-export type CosmosDBHealth = {
-  cosmosDB: boolean
-  status: string
-}
-
-export enum ChatHistoryLoadingState {
-  Loading = 'loading',
-  Success = 'success',
-  Fail = 'fail',
-  NotStarted = 'notStarted'
-}
-
 export type ErrorMessage = {
   title: string
   subtitle: string
@@ -137,7 +116,6 @@ export type UI = {
   logo?: string
   chat_logo?: string
   show_share_button?: boolean
-  show_chat_history_button?: boolean
 }
 
 export type FrontendSettings = {
